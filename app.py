@@ -86,5 +86,22 @@ def salvar_dados():
         print(e)
         return f"Erro ao salvar no S3: {str(e)}", 500
 
+# --- ROTA PARA REALIZAR TESTES DE STRESS DA APLICAÇÃO - FORÇAR CRIAÇÃO DE NOVAS INSTÂNCIAS ---
+@app.route('/stress', methods=['GET'])
+def stress():
+    """
+    Simula carga de CPU para acionar o AutoScaling.
+    ---
+    responses:
+      200:
+        description: Carga aplicada com sucesso
+    """
+    import time, math
+    inicio = time.time()
+    # Executa operações pesadas por 60 segundos
+    while time.time() - inicio < 60:
+        math.factorial(100000)
+    return {'mensagem': 'Stress test concluido', 'duracao_segundos': 60}, 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
